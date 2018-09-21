@@ -14,11 +14,13 @@ public class Turret : MonoBehaviour {
 	public float range = 3.75f;
 
 	private Transform target = null;
+	public int id { get; private set; }
 
-	// Use this for initialization
 	void Start() {
 		InvokeRepeating("UpdateTarget", 0, 0.5f);
 	}
+
+	public void SetID(int num) { id = num; }
 
 	void Fire() {
 		if (target == null) {
