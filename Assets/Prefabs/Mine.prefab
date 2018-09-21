@@ -93,7 +93,7 @@ SpriteRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 782039d1de3f2944595292f7d6f00f6b, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -114,7 +114,7 @@ SpriteRenderer:
   m_SortingLayer: 5
   m_SortingOrder: 0
   m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  m_Color: {r: 0.5147059, g: 0.12489187, b: 0.12489187, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0

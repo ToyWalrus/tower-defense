@@ -6,18 +6,22 @@ public class Player {
 	public int money { get; private set; }
 	public int score { get; private set; }
 
-	public List<Turret> turrets;
+	private List<Weapon> weapons;
 
 	public Player() {
-		turrets = new List<Turret>();
+		weapons = new List<Weapon>();
 		money = 100;
 		score = 0;
 	}
 
-	public bool BuyItem(Turret turret, int cost) {
-		if (cost > money) return false;
-		money -= cost;
-		turrets.Add(turret);
-		return true;
+	public bool CanAfford(int cost) {
+		return money >= cost;
 	}
+
+	public void BuyItem(Weapon weapon, int cost) {
+		money -= cost;
+		weapons.Add(weapon);
+	}
+
+	public List<Weapon> GetTurrets() { return weapons; }
 }

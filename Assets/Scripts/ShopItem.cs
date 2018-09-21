@@ -6,14 +6,15 @@ using UnityEngine.UI;
 public class ShopItem : MonoBehaviour {
 	public string itemName;
 	public int itemPrice = 10;
-	public Turret turret;
+	public GameObject turretPrefab;
+	public bool freelyPlaceable = false;
 
 	void Start() {		
 		Text[] textFields = GetComponentsInChildren<Text>();
 		textFields[0].text = itemName;
 		textFields[1].text = "$" + itemPrice;
 
-		SpriteRenderer renderer =  turret.GetComponent<SpriteRenderer>();
+		SpriteRenderer renderer =  turretPrefab.GetComponent<SpriteRenderer>();
 		Image image = GetComponentsInChildren<Image>()[1];
 		image.sprite = renderer.sprite;
 		image.material = renderer.sharedMaterial;
@@ -28,7 +29,13 @@ public class ShopItem : MonoBehaviour {
 	}
 
 	void ItemClicked() {
-		GameManager gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
-		gameManager.ShopItemClicked(turret, itemPrice);
+		if (CanBuy()) {
+			Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+			GameManager.instance.ShopItemClicked(Instantiate(turretPrefab, pos, Quaternion.identity), itemPrice, freelyPlaceable);
+		}
+	}
+
+	private bool CanBuy() {
+		return GameManager.instance.player.CanAfford(itemPrice);
 	}
 }

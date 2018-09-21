@@ -5,19 +5,20 @@ using UnityEngine;
 public class EnemySpawner : MonoBehaviour {
 
 	public GameObject enemyPrefab;
-	public float spawnInterval;
-	public int enemiesToSpawn;
-
+	private int enemiesToSpawn;
 	private int enemiesSpawned = 0;
 
-	// Use this for initialization
-	void Start() {
-		InvokeRepeating("SpawnEnemy", 0, spawnInterval);
+	public void StartSpawn(float interval, int numEnemies) {
+		enemiesToSpawn = numEnemies;
+		enemiesSpawned = 0;
+		InvokeRepeating("SpawnEnemy", 0, interval);
 	}
 
 	void SpawnEnemy() {
-		if (enemiesSpawned == enemiesToSpawn)
+		if (enemiesSpawned == enemiesToSpawn) {
+			CancelInvoke("SpawnEnemy");	
 			return;
+		}
 
 		Instantiate(enemyPrefab, transform.position, transform.rotation);
 		enemiesSpawned++;

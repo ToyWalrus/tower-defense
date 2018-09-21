@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Turret : MonoBehaviour {
-
+public class Turret : Weapon {
 	public EnemyType turretType = EnemyType.Ground;
 	public Transform cannon;
 	public GameObject projectile;
@@ -15,6 +14,7 @@ public class Turret : MonoBehaviour {
 
 	private Transform target = null;
 	public int id { get; private set; }
+	
 
 	void Start() {
 		InvokeRepeating("UpdateTarget", 0, 0.5f);
@@ -23,7 +23,7 @@ public class Turret : MonoBehaviour {
 	public void SetID(int num) { id = num; }
 
 	void Fire() {
-		if (target == null) {
+		if (target == null || !active) {
 			CancelInvoke("Fire");
 			return;
 		};
@@ -32,7 +32,7 @@ public class Turret : MonoBehaviour {
 	}
 
 	void UpdateTarget() {
-		if (target != null) return;
+		if (target != null || !active) return;
 		GameObject[] enemies = GameObject.FindGameObjectsWithTag(turretType.ToString() + "Enemy");
 		Vector3 position = transform.position;
 
@@ -50,7 +50,9 @@ public class Turret : MonoBehaviour {
 	}
 
 	void Update() {
-		if (target == null || Vector3.Distance(target.transform.position, transform.position) > range) {
+		if (!active || 
+				target == null ||
+				Vector3.Distance(target.transform.position, transform.position) > range) {
 			target = null;
 			return;
 		}
@@ -58,7 +60,7 @@ public class Turret : MonoBehaviour {
 		float rads = Mathf.Atan2(target.position.y - transform.position.y, target.position.x - transform.position.x);
 		float targetAngle = Mathf.Rad2Deg * rads - 90;
 		float curAngle = transform.rotation.eulerAngles.z;
-		float zRotation = Mathf.LerpAngle(curAngle, targetAngle, Time.deltaTime * 10);
+		float zRotation = Mathf.LerpAngle(curAngle, targetAngle, Time.deltaTime * 15);
 		transform.rotation = Quaternion.Euler(0, 0, zRotation);
 	}
 

@@ -4,18 +4,24 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour {
+	public static GameManager instance;
 
-	public int roundNumber = 1;
+	public int roundNumber { get { return waveManager.roundNumber; }}
 	public int livesRemaining = 10;
 	public Player player;
 
 	public Text livesRemainingField;
-	public Text moneyField;
-	public Button nextWaveButton;
+	public Text moneyField;	
+	public ItemPlacer turretPlacer;
+	public WaveManager waveManager;
 
 	// Use this for initialization
 	void Start () {
 		DontDestroyOnLoad(gameObject);
+		if (instance == null) {
+			instance = this;
+		}
+
 		if (player == null) {
 			player = new Player();
 		}
@@ -23,18 +29,15 @@ public class GameManager : MonoBehaviour {
 		livesRemainingField.text = "Lives Remaining: " + livesRemaining;
 		moneyField.text = "Money: $" + player.money;		
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
+
+	public void ShopItemClicked(GameObject item, int price, bool freelyPlaceable) {
+		turretPlacer.SetItem(item, price, freelyPlaceable);
 	}
 
-	public void ShopItemClicked(Turret turret, int price) {
-		if (player.BuyItem(turret, price)) {
-			moneyField.text = "Money: $" + player.money;
-			// play sound or something
-		} else {
-			// play other sound
-		}
+	public void ItemPlaced(GameObject item, int price) {
+		Weapon weapon = item.GetComponent<Weapon>();
+		player.BuyItem(weapon, price);
+		moneyField.text = "Money: $" + player.money;
+		weapon.SetActive(true);
 	}
 }
