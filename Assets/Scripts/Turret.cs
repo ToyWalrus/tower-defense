@@ -1,0 +1,68 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Turret : MonoBehaviour {
+
+	public EnemyType turretType = EnemyType.Ground;
+	public Transform cannon;
+	public GameObject projectile;
+
+	[Range(0.1f, 4)]
+	public float fireRate = 1;
+	public float damage = 3;
+	public float range = 3.75f;
+
+	private Transform target = null;
+
+	// Use this for initialization
+	void Start() {
+		InvokeRepeating("UpdateTarget", 0, 0.5f);
+	}
+
+	void Fire() {
+		if (target == null) {
+			CancelInvoke("Fire");
+			return;
+		};
+		GameObject fired = Instantiate(projectile, cannon.position, transform.rotation);
+		fired.tag = turretType.ToString() + "Projectile";
+	}
+
+	void UpdateTarget() {
+		if (target != null) return;
+		GameObject[] enemies = GameObject.FindGameObjectsWithTag(turretType.ToString() + "Enemy");
+		Vector3 position = transform.position;
+
+		// target first enemy found
+		// later functionality could have user select how targeting works
+		foreach (GameObject enemy in enemies) {
+			if (Vector3.Distance(enemy.transform.position, position) <= range) {
+				target = enemy.transform;
+				InvokeRepeating("Fire", 0.4f, fireRate);
+				return;
+			}
+		}
+
+		target = null;
+	}
+
+	void Update() {
+		if (target == null || Vector3.Distance(target.transform.position, transform.position) > range) {
+			target = null;
+			return;
+		}
+
+		float rads = Mathf.Atan2(target.position.y - transform.position.y, target.position.x - transform.position.x);
+		float targetAngle = Mathf.Rad2Deg * rads - 90;
+		float curAngle = transform.rotation.eulerAngles.z;
+		float zRotation = Mathf.LerpAngle(curAngle, targetAngle, Time.deltaTime * 10);
+		transform.rotation = Quaternion.Euler(0, 0, zRotation);
+	}
+
+	void OnDrawGizmosSelected() {
+		// Display the turret radius when selected
+		Gizmos.color = turretType == EnemyType.Ground ? Color.red : Color.cyan;
+		Gizmos.DrawWireSphere(transform.position, range);
+	}
+}
