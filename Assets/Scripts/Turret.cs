@@ -5,6 +5,7 @@ using UnityEngine;
 public class Turret : Weapon {
 	public EnemyType turretType = EnemyType.Ground;
 	public Transform cannon;
+	public SpriteRenderer turretRadius;
 	public GameObject projectile;
 
 	[Range(0.1f, 4)]
@@ -14,7 +15,6 @@ public class Turret : Weapon {
 
 	private Transform target = null;
 	public int id { get; private set; }
-	
 
 	void Start() {
 		InvokeRepeating("UpdateTarget", 0, 0.5f);
@@ -50,9 +50,9 @@ public class Turret : Weapon {
 	}
 
 	void Update() {
-		if (!active || 
-				target == null ||
-				Vector3.Distance(target.transform.position, transform.position) > range) {
+		if (!active ||
+			target == null ||
+			Vector3.Distance(target.transform.position, transform.position) > range) {
 			target = null;
 			return;
 		}
@@ -64,9 +64,17 @@ public class Turret : Weapon {
 		transform.rotation = Quaternion.Euler(0, 0, zRotation);
 	}
 
+	void OnMouseDown() {
+		GameManager.instance.FocusTurret(this);
+	}
+
 	void OnDrawGizmosSelected() {
 		// Display the turret radius when selected
 		Gizmos.color = turretType == EnemyType.Ground ? Color.red : Color.cyan;
 		Gizmos.DrawWireSphere(transform.position, range);
+	}
+
+	public void ShowRadius(bool show) {
+		turretRadius.enabled = show;
 	}
 }
