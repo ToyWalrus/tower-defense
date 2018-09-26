@@ -6,17 +6,19 @@ using UnityEngine.UI;
 public class GameManager : MonoBehaviour {
 	public static GameManager instance;
 
-	public int roundNumber { get { return waveManager.roundNumber; }}
+	public int roundNumber { get { return waveManager.roundNumber; } }
 	public int livesRemaining = 10;
 	public Player player;
 
 	public Text livesRemainingField;
-	public Text moneyField;	
+	public Text moneyField;
 	public ItemPlacer turretPlacer;
 	public WaveManager waveManager;
 
+	private Turret focusedTurret;
+
 	// Use this for initialization
-	void Start () {
+	void Start() {
 		DontDestroyOnLoad(gameObject);
 		if (instance == null) {
 			instance = this;
@@ -32,6 +34,12 @@ public class GameManager : MonoBehaviour {
 
 	public void ShopItemClicked(GameObject item, int price, bool freelyPlaceable) {
 		turretPlacer.SetItem(item, price, freelyPlaceable);
+		Turret turret = item.GetComponent<Turret>();
+		if (focusedTurret != null)
+			focusedTurret.ShowRadius(false);
+		focusedTurret = turret;
+		if (turret != null)
+			turret.ShowRadius(true);
 	}
 
 	public void ItemPlaced(GameObject item, int price) {
@@ -53,4 +61,16 @@ public class GameManager : MonoBehaviour {
 
 	void UpdateMoneyLabel() { moneyField.text = "Money: $" + player.money; }
 	void UpdateLivesLabel() { livesRemainingField.text = "Lives Remaining: " + livesRemaining; }
+	
+	public void FocusTurret(Turret turret) {
+		if (turret == null) {
+			if (focusedTurret != null) focusedTurret.ShowRadius(false);
+			focusedTurret = null;
+			return;
+		}
+
+		if (focusedTurret != null) focusedTurret.ShowRadius(false);
+		focusedTurret = turret;
+		focusedTurret.ShowRadius(true);
+	}
 }
