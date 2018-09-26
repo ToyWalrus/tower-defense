@@ -75,3 +75,6 @@ TagManager:
   - name: HealthBar
     uniqueID: 325926609
     locked: 0
+  - name: TowerRadius
+    uniqueID: 1154117943
+    locked: 0

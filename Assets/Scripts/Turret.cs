@@ -8,16 +8,22 @@ public class Turret : Weapon {
 	public SpriteRenderer turretRadius;
 	public GameObject projectile;
 
-	[Range(0.1f, 4)]
+	[Range(0.1f, 5), Tooltip("Number of shots per second")]
 	public float fireRate = 1;
 	public float damage = 3;
 	public float range = 3.75f;
+	public float turnSpeed = 15;
 
 	private Transform target = null;
+	private float inverseFireRate;
 	public int id { get; private set; }
 
 	void Start() {
-		InvokeRepeating("UpdateTarget", 0, 0.5f);
+		InvokeRepeating("UpdateTarget", 0, 0.5f); // check for target every .5 seconds
+		inverseFireRate = 1 / fireRate;
+
+		float radiusRatio = .2f; // scale is 1:5 between image scale and turret radius
+		turretRadius.transform.localScale = new Vector2(radiusRatio * range, radiusRatio * range);
 	}
 
 	public void SetID(int num) { id = num; }
@@ -29,6 +35,7 @@ public class Turret : Weapon {
 		};
 		GameObject fired = Instantiate(projectile, cannon.position, transform.rotation);
 		fired.tag = turretType.ToString() + "Projectile";
+		fired.GetComponent<Projectile>().damage = damage;
 	}
 
 	void UpdateTarget() {
@@ -41,7 +48,7 @@ public class Turret : Weapon {
 		foreach (GameObject enemy in enemies) {
 			if (Vector3.Distance(enemy.transform.position, position) <= range) {
 				target = enemy.transform;
-				InvokeRepeating("Fire", 0.4f, fireRate);
+				InvokeRepeating("Fire", 0.4f, inverseFireRate);
 				return;
 			}
 		}
@@ -60,7 +67,7 @@ public class Turret : Weapon {
 		float rads = Mathf.Atan2(target.position.y - transform.position.y, target.position.x - transform.position.x);
 		float targetAngle = Mathf.Rad2Deg * rads - 90;
 		float curAngle = transform.rotation.eulerAngles.z;
-		float zRotation = Mathf.LerpAngle(curAngle, targetAngle, Time.deltaTime * 15);
+		float zRotation = Mathf.LerpAngle(curAngle, targetAngle, Time.deltaTime * turnSpeed);
 		transform.rotation = Quaternion.Euler(0, 0, zRotation);
 	}
 
@@ -69,7 +76,7 @@ public class Turret : Weapon {
 	}
 
 	void OnDrawGizmosSelected() {
-		// Display the turret radius when selected
+		// Display the turret radius when selected in editor
 		Gizmos.color = turretType == EnemyType.Ground ? Color.red : Color.cyan;
 		Gizmos.DrawWireSphere(transform.position, range);
 	}
