@@ -17,8 +17,8 @@ public class Projectile : MonoBehaviour {
 
 	void OnTriggerEnter2D(Collider2D collider) {
 		Enemy enemy = collider.GetComponent<Enemy>();
-		if ((this.tag == "GroundProjectile" && enemy.enemyType == EnemyType.Ground) ||
-			(this.tag == "AirProjectile" && enemy.enemyType == EnemyType.Air)) {
+		if ((this.tag == "GroundProjectile" && enemy.enemyType == Type.Ground) ||
+			(this.tag == "AirProjectile" && enemy.enemyType == Type.Air)) {
 			enemy.TakeDamage(damage);
 			DestroyProjectile();
 		}

@@ -152,6 +152,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: 6
+  value: 12
   enemyType: 1
   healthBar: {fileID: 114362002254202452}
 --- !u!114 &114930055017639126

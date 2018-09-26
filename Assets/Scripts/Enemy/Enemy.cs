@@ -6,29 +6,28 @@ public class Enemy : MonoBehaviour {
 
 	[SerializeField]
 	private float health = 10;
-	public EnemyType enemyType = EnemyType.Ground;
+	public int value = 10;
+	public Type enemyType = Type.Ground;
 	public HealthBar healthBar;
 
 	void Start() {
 		healthBar.Init(health);
 	}
 
-	void Update() {
-		if (health <= 0) {
-			Destroy(gameObject);
-			Debug.Log("Kaboom went the enemy");
-		}
-	}
-
 	public void TakeDamage(float damage) {
 		health -= damage;
 		healthBar.UpdateHealth(health);
-		// play sound
+
+		if (health <= 0) {
+			// play sound ?
+			GameManager.instance.OnEnemyDestroyed(this);
+			Destroy(gameObject);			
+		}
 	}
 
 }
 
-public enum EnemyType {
+public enum Type {
 	Ground,
 	Air
 }

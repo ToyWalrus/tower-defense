@@ -8,7 +8,7 @@ public class Mine : Weapon {
 	void OnTriggerEnter2D(Collider2D collider) {
 		if (!active) return;
 		Enemy enemy = collider.GetComponent<Enemy>();
-		if (enemy.enemyType == EnemyType.Ground) {
+		if (enemy.enemyType == Type.Ground) {
 			enemy.TakeDamage(damage);
 			Destroy(gameObject);
 		}

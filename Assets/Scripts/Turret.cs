@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Turret : Weapon {
-	public EnemyType turretType = EnemyType.Ground;
+	public Type turretType = Type.Ground;
 	public Transform cannon;
 	public GameObject projectile;
 
-	[Range(0.1f, 4)]
+	[Range(0.1f, 4), Tooltip("A lower number indicates a higher rate of fire")]
 	public float fireRate = 1;
 	public float damage = 3;
 	public float range = 3.75f;
@@ -16,17 +16,20 @@ public class Turret : Weapon {
 	public int id { get; private set; }
 	
 
-	void Start() {
+	void OnEnable() {
 		InvokeRepeating("UpdateTarget", 0, 0.5f);
+		InvokeRepeating("Fire", 0, fireRate);
+	}
+
+	void OnDisable() {
+		CancelInvoke("UpdateTarget");
+		CancelInvoke("Fire");
 	}
 
 	public void SetID(int num) { id = num; }
 
 	void Fire() {
-		if (target == null || !active) {
-			CancelInvoke("Fire");
-			return;
-		};
+		if (target == null || !active) return;
 		GameObject fired = Instantiate(projectile, cannon.position, transform.rotation);
 		fired.tag = turretType.ToString() + "Projectile";
 	}
@@ -41,7 +44,6 @@ public class Turret : Weapon {
 		foreach (GameObject enemy in enemies) {
 			if (Vector3.Distance(enemy.transform.position, position) <= range) {
 				target = enemy.transform;
-				InvokeRepeating("Fire", 0.4f, fireRate);
 				return;
 			}
 		}
@@ -66,7 +68,7 @@ public class Turret : Weapon {
 
 	void OnDrawGizmosSelected() {
 		// Display the turret radius when selected
-		Gizmos.color = turretType == EnemyType.Ground ? Color.red : Color.cyan;
+		Gizmos.color = turretType == Type.Ground ? Color.red : Color.cyan;
 		Gizmos.DrawWireSphere(transform.position, range);
 	}
 }

@@ -28,6 +28,7 @@ public class EnemyMovement : MonoBehaviour {
 		if (ReachedWaypoint()) {
 			waypointIndex++;
 			if (waypointIndex == waypoints.transform.childCount) {
+				GameManager.instance.OnEnemyReachedEnd(gameObject.GetComponent<Enemy>());
 				Destroy(gameObject);
 				return;
 			}

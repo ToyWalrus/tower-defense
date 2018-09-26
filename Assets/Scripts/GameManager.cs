@@ -26,8 +26,8 @@ public class GameManager : MonoBehaviour {
 			player = new Player();
 		}
 
-		livesRemainingField.text = "Lives Remaining: " + livesRemaining;
-		moneyField.text = "Money: $" + player.money;		
+		UpdateLivesLabel();
+		UpdateMoneyLabel();	
 	}
 
 	public void ShopItemClicked(GameObject item, int price, bool freelyPlaceable) {
@@ -37,7 +37,20 @@ public class GameManager : MonoBehaviour {
 	public void ItemPlaced(GameObject item, int price) {
 		Weapon weapon = item.GetComponent<Weapon>();
 		player.BuyItem(weapon, price);
-		moneyField.text = "Money: $" + player.money;
+		UpdateMoneyLabel();
 		weapon.SetActive(true);
 	}
+
+	public void OnEnemyDestroyed(Enemy enemy) {
+		player.AddMoney(enemy.value);
+		UpdateMoneyLabel();
+	}
+
+	public void OnEnemyReachedEnd(Enemy enemy) {
+		livesRemaining -= 1;
+		UpdateLivesLabel();
+	}
+
+	void UpdateMoneyLabel() { moneyField.text = "Money: $" + player.money; }
+	void UpdateLivesLabel() { livesRemainingField.text = "Lives Remaining: " + livesRemaining; }
 }

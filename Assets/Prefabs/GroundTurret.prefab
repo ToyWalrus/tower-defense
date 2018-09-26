@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 4192474749588082}
   - component: {fileID: 212777028806091584}
   - component: {fileID: 114867797705671624}
+  - component: {fileID: 61462691312240686}
   m_Layer: 0
   m_Name: GroundTurret
   m_TagString: Turret
@@ -50,7 +51,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1160987634905062}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5, y: 6, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4967067507751558}
@@ -70,6 +71,31 @@ Transform:
   m_Father: {fileID: 4192474749588082}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!61 &61462691312240686
+BoxCollider2D:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1160987634905062}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 2.1333334, y: 2.1333334}
+    newSize: {x: 3.2, y: 3.2}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1.1257832, y: 1.214941}
+  m_EdgeRadius: 0
 --- !u!114 &114867797705671624
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -84,8 +110,8 @@ MonoBehaviour:
   turretType: 0
   cannon: {fileID: 4967067507751558}
   projectile: {fileID: 1968564660868068, guid: cf8193faefa60604093c1feee59470f3, type: 2}
-  fireRate: 1
-  damage: 3
+  fireRate: 0.9
+  damage: 2
   range: 3.75
 --- !u!212 &212777028806091584
 SpriteRenderer:

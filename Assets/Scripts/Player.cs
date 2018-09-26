@@ -23,5 +23,7 @@ public class Player {
 		weapons.Add(weapon);
 	}
 
+	public void AddMoney(int amount) { money += amount; }
+
 	public List<Weapon> GetTurrets() { return weapons; }
 }
