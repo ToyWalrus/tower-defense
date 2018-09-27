@@ -10,6 +10,8 @@ public class EnemyMovement : MonoBehaviour {
 	private int waypointIndex = 0;
 	private Transform target;
 
+	private Transform aimSpot;
+
 	void Start() {
 		waypoints = GameObject.FindGameObjectWithTag(GetComponent<Enemy>().enemyType.ToString() +
 			"WaypointArray");
@@ -19,6 +21,10 @@ public class EnemyMovement : MonoBehaviour {
 		}
 
 		target = waypoints.transform.GetChild(waypointIndex);
+		aimSpot = GetComponent<Enemy>().aimSpot;
+		
+		Vector2 dir = target.position - transform.position;
+		RotateTowardWaypoint(dir.normalized);
 	}
 
 	void Update() {
@@ -33,12 +39,18 @@ public class EnemyMovement : MonoBehaviour {
 				return;
 			}
 			target = waypoints.transform.GetChild(waypointIndex);
+			Vector2 newDir = target.position - transform.position;
+			RotateTowardWaypoint(newDir.normalized);
 		}
 	}
 
 	bool ReachedWaypoint(float dist = 0.1f) {
 		Vector2 diff = target.position - transform.position;
-		Vector2 epsilon = new Vector2(dist, dist);
-		return Mathf.Abs(diff.x) < epsilon.x && Mathf.Abs(diff.y) < epsilon.y;
+		return Mathf.Abs(diff.x) < dist && Mathf.Abs(diff.y) < dist;
+	}
+
+	void RotateTowardWaypoint(Vector2 dirVector) {
+		float colliderRadius = GetComponent<CircleCollider2D>().radius;
+		aimSpot.transform.localPosition = dirVector * colliderRadius;
 	}
 }

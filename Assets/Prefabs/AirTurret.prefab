@@ -137,13 +137,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 41654055b044e9e43abff679e147e544, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  active: 0
   turretType: 1
   cannon: {fileID: 4496878929515426}
-  turretRadius: {fileID: 0}
+  turretRadius: {fileID: 212231763112749302}
   projectile: {fileID: 1968564660868068, guid: cf8193faefa60604093c1feee59470f3, type: 2}
   fireRate: 0.8
   damage: 1.5
   range: 5
+  turnSpeed: 15
 --- !u!212 &212231763112749302
 SpriteRenderer:
   m_ObjectHideFlags: 1

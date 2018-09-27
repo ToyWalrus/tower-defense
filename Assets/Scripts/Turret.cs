@@ -19,7 +19,8 @@ public class Turret : Weapon {
 	public int id { get; private set; }
 
 	void OnEnable() {
-		InvokeRepeating("UpdateTarget", 0, 0.5f);
+		inverseFireRate = 1 / fireRate;
+		InvokeRepeating("UpdateTarget", 0, 0.2f);
 		InvokeRepeating("Fire", 0, inverseFireRate);
 	}
 
@@ -28,11 +29,9 @@ public class Turret : Weapon {
 		CancelInvoke("Fire");
 	}
 
-	void Start() {
-		inverseFireRate = 1 / fireRate;
-
+	void Start() {		
 		float radiusRatio = .2f; // scale is 1:5 between image scale and turret radius
-		turretRadius.transform.localScale = new Vector2(radiusRatio * range, radiusRatio * range);
+		turretRadius.transform.localScale = new Vector2(radiusRatio * range, radiusRatio * range);		
 	}
 
 	public void SetID(int num) { id = num; }
@@ -53,7 +52,7 @@ public class Turret : Weapon {
 		// later functionality could have user select how targeting works
 		foreach (GameObject enemy in enemies) {
 			if (Vector3.Distance(enemy.transform.position, position) <= range) {
-				target = enemy.transform;
+				target = enemy.GetComponent<Enemy>().aimSpot;				
 				return;
 			}
 		}

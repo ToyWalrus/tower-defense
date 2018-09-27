@@ -9,6 +9,7 @@ public class Enemy : MonoBehaviour {
 	public int value = 10;
 	public Type enemyType = Type.Ground;
 	public HealthBar healthBar;
+	public Transform aimSpot;
 
 	void Start() {
 		healthBar.Init(health);
