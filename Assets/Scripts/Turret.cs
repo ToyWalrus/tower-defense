@@ -8,22 +8,31 @@ public class Turret : Weapon {
 	public SpriteRenderer turretRadius;
 	public GameObject projectile;
 
-	[Range(0.1f, 4), Tooltip("A lower number indicates a higher rate of fire")]
+	[Range(0.1f, 5), Tooltip("Number of shots per second")]
 	public float fireRate = 1;
 	public float damage = 3;
 	public float range = 3.75f;
+	public float turnSpeed = 15;
 
 	private Transform target = null;
+	private float inverseFireRate;
 	public int id { get; private set; }
 
 	void OnEnable() {
 		InvokeRepeating("UpdateTarget", 0, 0.5f);
-		InvokeRepeating("Fire", 0, fireRate);
+		InvokeRepeating("Fire", 0, inverseFireRate);
 	}
 
 	void OnDisable() {
 		CancelInvoke("UpdateTarget");
 		CancelInvoke("Fire");
+	}
+
+	void Start() {
+		inverseFireRate = 1 / fireRate;
+
+		float radiusRatio = .2f; // scale is 1:5 between image scale and turret radius
+		turretRadius.transform.localScale = new Vector2(radiusRatio * range, radiusRatio * range);
 	}
 
 	public void SetID(int num) { id = num; }
@@ -32,6 +41,7 @@ public class Turret : Weapon {
 		if (target == null || !active) return;
 		GameObject fired = Instantiate(projectile, cannon.position, transform.rotation);
 		fired.tag = turretType.ToString() + "Projectile";
+		fired.GetComponent<Projectile>().damage = damage;
 	}
 
 	void UpdateTarget() {
@@ -62,7 +72,7 @@ public class Turret : Weapon {
 		float rads = Mathf.Atan2(target.position.y - transform.position.y, target.position.x - transform.position.x);
 		float targetAngle = Mathf.Rad2Deg * rads - 90;
 		float curAngle = transform.rotation.eulerAngles.z;
-		float zRotation = Mathf.LerpAngle(curAngle, targetAngle, Time.deltaTime * 15);
+		float zRotation = Mathf.LerpAngle(curAngle, targetAngle, Time.deltaTime * turnSpeed);
 		transform.rotation = Quaternion.Euler(0, 0, zRotation);
 	}
 
