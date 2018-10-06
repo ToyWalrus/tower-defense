@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class ItemPlacer : MonoBehaviour {
-	public CompositeCollider2D groundTerrain;
-	public CompositeCollider2D waterTerrain;
+	public CompositeCollider2D path;
 
 	private GameObject itemToPlace;
 	private int price = 0;
@@ -13,10 +12,13 @@ public class ItemPlacer : MonoBehaviour {
 	void Update () {
 		if (itemToPlace == null) return;
 		Vector2 currentPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-		itemToPlace.transform.position = freelyPlaceable ?
+		Vector3 itemPlacement = freelyPlaceable ?
 			new Vector3(currentPos.x, currentPos.y, 0) :
 			new Vector3(Mathf.Round(currentPos.x), Mathf.Round(currentPos.y), 0); // snap-to-grid effect
-		
+
+		itemToPlace.transform.position  = itemPlacement;
+		DisplayValidPlacement(itemPlacement);	
+
 		if (Input.GetMouseButtonDown(0) && IsValidPlacement(itemToPlace.transform.position)) {
 			GameManager.instance.ItemPlaced(itemToPlace, price);
 			RemoveItemRef();
@@ -32,8 +34,19 @@ public class ItemPlacer : MonoBehaviour {
 		this.freelyPlaceable = freelyPlaceable;
 	}
 
+	private void DisplayValidPlacement(Vector2 position) {
+		SpriteRenderer renderer = itemToPlace.GetComponent<SpriteRenderer>();
+		Color color = renderer.color;
+		if (IsValidPlacement(position)) {
+			color.a = 1f;
+		} else {
+			color.a = 0.5f;
+		}
+		renderer.color = color;
+	}
+
 	private bool IsValidPlacement(Vector2 position) {
-		return true; // freelyPlaceable || groundTerrain.bounds.Contains(position);
+		return freelyPlaceable || !path.OverlapPoint(position); //!path.bounds.Contains(position);
 	}
 
 	private void RemoveItemRef() {

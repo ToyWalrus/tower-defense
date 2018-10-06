@@ -14,6 +14,7 @@ TagManager:
   - Turret
   - GroundWaypointArray
   - AirWaypointArray
+  - Path
   layers:
   - Default
   - TransparentFX
@@ -51,17 +52,17 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: Ground
-    uniqueID: 1068407187
-    locked: 0
-  - name: GroundEnemy
-    uniqueID: 153003289
-    locked: 0
   - name: Terrain
     uniqueID: 558895833
     locked: 0
   - name: Water
     uniqueID: 1340419995
+    locked: 0
+  - name: Path
+    uniqueID: 1068407187
+    locked: 0
+  - name: GroundEnemy
+    uniqueID: 153003289
     locked: 0
   - name: Projectile
     uniqueID: 1712757399
