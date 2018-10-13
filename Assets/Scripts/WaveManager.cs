@@ -36,7 +36,7 @@ public class WaveManager : MonoBehaviour {
 	public bool WaveIsActive() {
 		return GameManager.instance.aliveEnemiesCount > 0;		
 	}
-	
+
 	void CheckForActiveWave() {
 		if (!WaveIsActive()) {
 			SetButtonDisabled(false);
@@ -49,14 +49,18 @@ public class WaveManager : MonoBehaviour {
 		if (disabled) {
 			SetButtonText("Wave In Progress");
 		} else {
-			SetButtonText("Spawn Next Wave");
+			if (waveIndex == waves.Length) {
+				SetButtonText("Begin Next Round");
+				GameManager.instance.UpdateRound();
+				waveIndex = 0;
+			} else {
+				SetButtonText("Spawn Next Wave");
+			}
 		}			
 	}
 
-	public void SetButtonText(string text) {
+	void SetButtonText(string text) {
 		Text buttonText = nextWaveButton.GetComponentInChildren<Text>();
 		buttonText.text = text;
 	}
-
-	public void ResetWaveIndex() { waveIndex = 0; }
 }
