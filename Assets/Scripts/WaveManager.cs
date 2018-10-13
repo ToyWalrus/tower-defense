@@ -4,22 +4,15 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class WaveManager : MonoBehaviour {
-	public int roundNumber = 1;
-	public float spawnInterval = 0.5f;
 	public Button nextWaveButton;
-	public GameObject enemySpawners;
-	public bool waveActive {
-		get {
-			return GameObject.FindGameObjectsWithTag("GroundEnemy").Length > 0 ||
-				GameObject.FindGameObjectsWithTag("AirEnemy").Length > 0;
-		}
+	public EnemySpawner enemySpawner;
+	public int waveIndex = 0;
+	private Wave currentWave;	
+
+	private Wave[] waves {
+		get { return GameManager.instance.roundManager.currentRoundWaves; }
 	}
 
-	private EnemySpawner[] spawners;
-
-	void Start() {
-		spawners = enemySpawners.GetComponentsInChildren<EnemySpawner>();
-	}
 
 	void OnEnable() {
 		nextWaveButton.onClick.AddListener(SpawnWave);
@@ -30,30 +23,44 @@ public class WaveManager : MonoBehaviour {
 	}
 
 	void SpawnWave() {
-		int enemiesToSpawn = roundNumber * 3;
-		foreach (EnemySpawner spawner in spawners) {
-			spawner.StartSpawn(spawnInterval, enemiesToSpawn);
-		}
+		currentWave = waves[waveIndex++];
+		int enemiesToSpawn = currentWave.count;
+		float interval = 1f / currentWave.rate;
+		
+		enemySpawner.StartSpawn(interval, enemiesToSpawn, currentWave.enemyTypes);
 
-		InvokeRepeating("CheckForActiveWave", enemiesToSpawn * spawnInterval, 0.5f); // only begin checking after all enemies have spawned
+		InvokeRepeating("CheckForActiveWave", enemiesToSpawn * interval, 0.5f); // only begin checking after all enemies have spawned
 		SetButtonDisabled(true);
 	}
 
+	public bool WaveIsActive() {
+		return GameManager.instance.aliveEnemiesCount > 0;		
+	}
+
 	void CheckForActiveWave() {
-		if (!waveActive) {
+		if (!WaveIsActive()) {
 			SetButtonDisabled(false);
-			roundNumber++;
 			CancelInvoke("CheckForActiveWave");
 		}
 	}
 
 	void SetButtonDisabled(bool disabled) {
 		nextWaveButton.interactable = !disabled;
-		Text buttonText = nextWaveButton.GetComponentInChildren<Text>();
 		if (disabled) {
-			buttonText.text = "Wave In Progress";
+			SetButtonText("Wave In Progress");
 		} else {
-			buttonText.text = "Spawn Next Wave";
+			if (waveIndex == waves.Length) {
+				SetButtonText("Begin Next Round");
+				GameManager.instance.UpdateRound();
+				waveIndex = 0;
+			} else {
+				SetButtonText("Spawn Next Wave");
+			}
 		}			
+	}
+
+	void SetButtonText(string text) {
+		Text buttonText = nextWaveButton.GetComponentInChildren<Text>();
+		buttonText.text = text;
 	}
 }

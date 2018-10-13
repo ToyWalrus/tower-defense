@@ -10,7 +10,7 @@ public class Player {
 
 	public Player() {
 		weapons = new List<Weapon>();
-		money = 100;
+		money = 40;
 		score = 0;
 	}
 

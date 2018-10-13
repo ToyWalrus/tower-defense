@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class GameManager : MonoBehaviour {
 	public static GameManager instance;
 
-	public int roundNumber { get { return waveManager.roundNumber; } }
+	public int roundNumber { get { return roundManager.roundNumber; } }
 	public int livesRemaining = 10;
 	public Player player;
 
@@ -14,6 +14,10 @@ public class GameManager : MonoBehaviour {
 	public Text moneyField;
 	public ItemPlacer turretPlacer;
 	public WaveManager waveManager;
+	public RoundManager roundManager;
+	public int aliveEnemiesCount {
+		get; private set;
+	}
 
 	private Turret focusedTurret;
 
@@ -27,7 +31,7 @@ public class GameManager : MonoBehaviour {
 		if (player == null) {
 			player = new Player();
 		}
-
+		aliveEnemiesCount = 0;
 		UpdateLivesLabel();
 		UpdateMoneyLabel();	
 	}
@@ -51,18 +55,23 @@ public class GameManager : MonoBehaviour {
 
 	public void OnEnemyDestroyed(Enemy enemy) {
 		player.AddMoney(enemy.value);
+		aliveEnemiesCount--;
 		UpdateMoneyLabel();
 	}
 
 	public void OnEnemyReachedEnd(Enemy enemy) {
 		livesRemaining -= 1;
+		aliveEnemiesCount--;
 		UpdateLivesLabel();
 	}
 
 	void UpdateMoneyLabel() { moneyField.text = "Money: $" + player.money; }
 	void UpdateLivesLabel() { livesRemainingField.text = "Lives Remaining: " + livesRemaining; }
-	
+
+	public void UpdateRound() { roundManager.NextRound(); }
+	public void EnemySpawned() { aliveEnemiesCount++; }
 	public void FocusTurret(Turret turret) {
+
 		if (turret == null) {
 			if (focusedTurret != null) focusedTurret.ShowRadius(false);
 			focusedTurret = null;
