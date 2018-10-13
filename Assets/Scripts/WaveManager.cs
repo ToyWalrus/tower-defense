@@ -6,19 +6,13 @@ using UnityEngine.UI;
 public class WaveManager : MonoBehaviour {
 	public Button nextWaveButton;
 	public EnemySpawner enemySpawner;
-	public Wave[] waves;
-	public int waveIndex {
-		get { return GameManager.instance.roundNumber - 1; }
+	public int waveIndex = 0;
+	private Wave currentWave;	
+
+	private Wave[] waves {
+		get { return GameManager.instance.roundManager.currentRoundWaves; }
 	}
 
-	public bool waveActive {
-		get {
-			return GameObject.FindGameObjectsWithTag("GroundEnemy").Length > 0 ||
-				GameObject.FindGameObjectsWithTag("AirEnemy").Length > 0;
-		}
-	}
-
-	private Wave currentWave;
 
 	void OnEnable() {
 		nextWaveButton.onClick.AddListener(SpawnWave);
@@ -29,7 +23,7 @@ public class WaveManager : MonoBehaviour {
 	}
 
 	void SpawnWave() {
-		currentWave = waves[waveIndex];
+		currentWave = waves[waveIndex++];
 		int enemiesToSpawn = currentWave.count;
 		float interval = 1f / currentWave.rate;
 		
@@ -39,8 +33,12 @@ public class WaveManager : MonoBehaviour {
 		SetButtonDisabled(true);
 	}
 
+	public bool WaveIsActive() {
+		return GameManager.instance.aliveEnemiesCount > 0;		
+	}
+	
 	void CheckForActiveWave() {
-		if (!waveActive) {
+		if (!WaveIsActive()) {
 			SetButtonDisabled(false);
 			CancelInvoke("CheckForActiveWave");
 		}
@@ -59,4 +57,6 @@ public class WaveManager : MonoBehaviour {
 		Text buttonText = nextWaveButton.GetComponentInChildren<Text>();
 		buttonText.text = text;
 	}
+
+	public void ResetWaveIndex() { waveIndex = 0; }
 }

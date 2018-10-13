@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class ItemPlacer : MonoBehaviour {
-	public CompositeCollider2D path;
+	public CompositeCollider2D enemyPath;
 
 	private GameObject itemToPlace;
 	private int price = 0;
@@ -46,7 +46,7 @@ public class ItemPlacer : MonoBehaviour {
 	}
 
 	private bool IsValidPlacement(Vector2 position) {
-		return freelyPlaceable || !path.OverlapPoint(position); //!path.bounds.Contains(position);
+		return freelyPlaceable || !enemyPath.OverlapPoint(position); //!path.bounds.Contains(position);
 	}
 
 	private void RemoveItemRef() {

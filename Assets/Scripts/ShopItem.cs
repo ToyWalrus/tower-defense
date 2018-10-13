@@ -22,9 +22,9 @@ public class ShopItem : MonoBehaviour {
 
 	void Update() {
 		Button button = GetComponent<Button>();
-		if (button.enabled && !CanBuy()) {
+		if (button.interactable && !CanBuy()) {
 			button.interactable = false;
-		} else if (!button.enabled && CanBuy()) {
+		} else if (!button.interactable && CanBuy()) {
 			button.interactable = true;
 		}
 	}

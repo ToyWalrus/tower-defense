@@ -1011,15 +1011,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nextWaveButton: {fileID: 921007426}
   enemySpawner: {fileID: 1150821806}
-  waves:
-  - enemyTypes:
-    - {fileID: 1980227244401312, guid: 8fe6945cbf312d64b884a0622964ac3e, type: 2}
-    rate: 1
-    count: 3
-  - enemyTypes:
-    - {fileID: 1980227244401312, guid: 8fe6945cbf312d64b884a0622964ac3e, type: 2}
-    rate: 1.5
-    count: 4
+  waveIndex: 0
 --- !u!4 &541250937
 Transform:
   m_ObjectHideFlags: 0
@@ -1121,7 +1113,7 @@ MonoBehaviour:
   moneyField: {fileID: 472367279}
   turretPlacer: {fileID: 1570461439}
   waveManager: {fileID: 541250936}
-  roundManager: {fileID: 0}
+  roundManager: {fileID: 1451001080}
 --- !u!4 &691101707
 Transform:
   m_ObjectHideFlags: 0
@@ -10207,6 +10199,30 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   roundNumber: 1
+  rounds:
+  - roundWaves:
+    - enemyTypes:
+      - {fileID: 1980227244401312, guid: 8fe6945cbf312d64b884a0622964ac3e, type: 2}
+      rate: 1
+      count: 3
+    - enemyTypes:
+      - {fileID: 1980227244401312, guid: 8fe6945cbf312d64b884a0622964ac3e, type: 2}
+      rate: 1.5
+      count: 4
+  - roundWaves:
+    - enemyTypes:
+      - {fileID: 1980227244401312, guid: 8fe6945cbf312d64b884a0622964ac3e, type: 2}
+      rate: 2
+      count: 5
+    - enemyTypes:
+      - {fileID: 1980227244401312, guid: f3dcfc40cfcd74d4a854cc00e8a9564d, type: 2}
+      rate: 2
+      count: 4
+    - enemyTypes:
+      - {fileID: 1980227244401312, guid: 8fe6945cbf312d64b884a0622964ac3e, type: 2}
+      - {fileID: 1980227244401312, guid: f3dcfc40cfcd74d4a854cc00e8a9564d, type: 2}
+      rate: 2
+      count: 7
 --- !u!1 &1570461438
 GameObject:
   m_ObjectHideFlags: 0
@@ -10234,7 +10250,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3688fe585a47e824a9d46fcb24df2dc2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  path: {fileID: 1329591511}
+  enemyPath: {fileID: 1329591511}
 --- !u!4 &1570461440
 Transform:
   m_ObjectHideFlags: 0

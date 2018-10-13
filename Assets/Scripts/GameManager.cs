@@ -15,6 +15,9 @@ public class GameManager : MonoBehaviour {
 	public ItemPlacer turretPlacer;
 	public WaveManager waveManager;
 	public RoundManager roundManager;
+	public int aliveEnemiesCount {
+		get; private set;
+	}
 
 	private Turret focusedTurret;
 
@@ -28,7 +31,7 @@ public class GameManager : MonoBehaviour {
 		if (player == null) {
 			player = new Player();
 		}
-
+		aliveEnemiesCount = 0;
 		UpdateLivesLabel();
 		UpdateMoneyLabel();	
 	}
@@ -52,12 +55,14 @@ public class GameManager : MonoBehaviour {
 
 	public void OnEnemyDestroyed(Enemy enemy) {
 		player.AddMoney(enemy.value);
+		aliveEnemiesCount--;
 		UpdateMoneyLabel();
 		CheckForEndOfRound();
 	}
 
 	public void OnEnemyReachedEnd(Enemy enemy) {
 		livesRemaining -= 1;
+		aliveEnemiesCount--;
 		UpdateLivesLabel();
 		CheckForEndOfRound();
 	}
@@ -65,10 +70,14 @@ public class GameManager : MonoBehaviour {
 	void UpdateMoneyLabel() { moneyField.text = "Money: $" + player.money; }
 	void UpdateLivesLabel() { livesRemainingField.text = "Lives Remaining: " + livesRemaining; }
 	void CheckForEndOfRound() {
-		if (waveManager.waveActive) return;
+		if (aliveEnemiesCount > 0) return;
+		if (waveManager.waveIndex < roundManager.currentRoundWaves.Length) return;
 		roundManager.NextRound();
 		waveManager.SetButtonText("Begin Next Round");
+		waveManager.ResetWaveIndex();
 	}
+
+	public void EnemySpawned() { aliveEnemiesCount++; }
 
 	public void FocusTurret(Turret turret) {
 		if (turret == null) {

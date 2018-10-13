@@ -25,6 +25,7 @@ public class EnemySpawner : MonoBehaviour {
 		}
 
 		Instantiate(GetRandomEnemy(), transform.position, transform.rotation);
+		GameManager.instance.EnemySpawned();
 		enemiesSpawned++;
 	}
 }
