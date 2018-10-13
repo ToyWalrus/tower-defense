@@ -4,10 +4,13 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class WaveManager : MonoBehaviour {
-	public int roundNumber = 1;
-	public float spawnInterval = 0.5f;
 	public Button nextWaveButton;
-	public GameObject enemySpawners;
+	public EnemySpawner enemySpawner;
+	public Wave[] waves;
+	public int waveIndex {
+		get { return GameManager.instance.roundNumber - 1; }
+	}
+
 	public bool waveActive {
 		get {
 			return GameObject.FindGameObjectsWithTag("GroundEnemy").Length > 0 ||
@@ -15,11 +18,7 @@ public class WaveManager : MonoBehaviour {
 		}
 	}
 
-	private EnemySpawner[] spawners;
-
-	void Start() {
-		spawners = enemySpawners.GetComponentsInChildren<EnemySpawner>();
-	}
+	private Wave currentWave;
 
 	void OnEnable() {
 		nextWaveButton.onClick.AddListener(SpawnWave);
@@ -30,30 +29,34 @@ public class WaveManager : MonoBehaviour {
 	}
 
 	void SpawnWave() {
-		int enemiesToSpawn = roundNumber * 3;
-		foreach (EnemySpawner spawner in spawners) {
-			spawner.StartSpawn(spawnInterval, enemiesToSpawn);
-		}
+		currentWave = waves[waveIndex];
+		int enemiesToSpawn = currentWave.count;
+		float interval = 1f / currentWave.rate;
+		
+		enemySpawner.StartSpawn(interval, enemiesToSpawn, currentWave.enemyTypes);
 
-		InvokeRepeating("CheckForActiveWave", enemiesToSpawn * spawnInterval, 0.5f); // only begin checking after all enemies have spawned
+		InvokeRepeating("CheckForActiveWave", enemiesToSpawn * interval, 0.5f); // only begin checking after all enemies have spawned
 		SetButtonDisabled(true);
 	}
 
 	void CheckForActiveWave() {
 		if (!waveActive) {
 			SetButtonDisabled(false);
-			roundNumber++;
 			CancelInvoke("CheckForActiveWave");
 		}
 	}
 
 	void SetButtonDisabled(bool disabled) {
 		nextWaveButton.interactable = !disabled;
-		Text buttonText = nextWaveButton.GetComponentInChildren<Text>();
 		if (disabled) {
-			buttonText.text = "Wave In Progress";
+			SetButtonText("Wave In Progress");
 		} else {
-			buttonText.text = "Spawn Next Wave";
+			SetButtonText("Spawn Next Wave");
 		}			
+	}
+
+	public void SetButtonText(string text) {
+		Text buttonText = nextWaveButton.GetComponentInChildren<Text>();
+		buttonText.text = text;
 	}
 }
